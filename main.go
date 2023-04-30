@@ -59,5 +59,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	// Отвечаем на сообщение
-	s.ChannelMessageSend(m.ChannelID, "Привет, я бот!")
+	if m.ChannelID == os.Getenv("TEST_CHANNEL_ID") {
+		s.ChannelMessageSend(m.ChannelID, "Привет, я пидорас!")
+	}
 }
