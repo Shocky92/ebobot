@@ -7,11 +7,19 @@ import (
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	// Читаем токен дискорд бота из env файла
+	err := godotenv.Load()
+	if err != nil {
+		fmt.Println("Не удалось загрузить .env файл")
+		return
+	}
+
 	// Создаем новую сессию DiscordGo
-	dg, err := discordgo.New("Bot " + "Njc5NzA0NzE4NDYwOTc3MTUz.Xk1OWQ.IU9ZNcsb6uoiq-LDxPP4hNJppJI")
+	dg, err := discordgo.New("Bot " + os.Getenv("DISCORD_TOKEN"))
 	if err != nil {
 		fmt.Println("Ошибка при создании сессии DiscordGo: ", err)
 		return
