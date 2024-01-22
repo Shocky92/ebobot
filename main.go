@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"os"
 	"os/signal"
@@ -11,9 +10,6 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/joho/godotenv"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func main() {
@@ -76,39 +72,39 @@ func onReceiveMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Author.Bot || m.Author.ID == s.State.User.ID {
 		return
 	}
+	fmt.Println(m.Content)
+	// // Устанавливаем соединение с сервером
+	// client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://ebobot_db_1:27017"))
+	// if err != nil {
+	// 	fmt.Println("Не создать клиент базы данных: ", err)
+	// }
 
-	// Устанавливаем соединение с сервером
-	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://ebobot_db_1:27017"))
-	if err != nil {
-		fmt.Println("Не создать клиент базы данных: ", err)
-	}
+	// // Подключаем клиента к серверу
+	// ctx := context.Background()
+	// err = client.Connect(ctx)
+	// if err != nil {
+	// 	fmt.Println("Не удалось присоединиться к базе данных: ", err)
+	// }
 
-	// Подключаем клиента к серверу
-	ctx := context.Background()
-	err = client.Connect(ctx)
-	if err != nil {
-		fmt.Println("Не удалось присоединиться к базе данных: ", err)
-	}
+	// // Определяем имя базы данных и коллекции
+	// db := client.Database("ebobot")
+	// col := db.Collection("sentences")
 
-	// Определяем имя базы данных и коллекции
-	db := client.Database("ebobot")
-	col := db.Collection("sentences")
+	// // Очищаем предложение
+	// cleanSentence := sanitizeSentence(m.Content)
 
-	// Очищаем предложение
-	cleanSentence := sanitizeSentence(m.Content)
+	// if cleanSentence == "" {
+	// 	return
+	// }
 
-	if cleanSentence == "" {
-		return
-	}
+	// // Создаем новый документ, содержащий очищенное предложение
+	// doc := bson.D{{Key: "sentence", Value: cleanSentence}}
 
-	// Создаем новый документ, содержащий очищенное предложение
-	doc := bson.D{{Key: "sentence", Value: cleanSentence}}
-
-	// Вставляем документ в коллекцию
-	_, err = col.InsertOne(ctx, doc)
-	if err != nil {
-		fmt.Println("Не удалось сохранить запись в коллекцию: ", err)
-	}
+	// // Вставляем документ в коллекцию
+	// _, err = col.InsertOne(ctx, doc)
+	// if err != nil {
+	// 	fmt.Println("Не удалось сохранить запись в коллекцию: ", err)
+	// }
 }
 
 func sanitizeSentence(sentence string) string {

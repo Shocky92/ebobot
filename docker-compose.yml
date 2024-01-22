@@ -1,11 +1,23 @@
-version: '3'
+version: '3.9'
 services:
   db:
-    image: mongo
+    image: postgres:13.3
+    environment:
+      POSTGRES_DB: "ebobot"
+      POSTGRES_USER: "ebobot"
+      POSTGRES_PASSWORD: "pgsqlebobot"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
     ports:
-      - "27017:27017"
+      - "5432:5432"
     volumes:
-      - mongo
+      - ebobot-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ebobot -d ebobot"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
   app:
     build: .
     ports:
@@ -14,4 +26,4 @@ services:
       - db
 
 volumes:
-  mongo:
+  ebobot-data:
