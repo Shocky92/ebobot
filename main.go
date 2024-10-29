@@ -20,13 +20,16 @@ var s *discordgo.Session
 
 func init() {
 	config.SetConfig()
-	s, err := discordgo.New("Bot " + config.Token)
+	var err error
+	s, err = discordgo.New("Bot " + config.Token)
 
 	if err != nil {
 		log.Fatalf("Invalid bot parameters: %v", err)
 	}
 
 	discord.RegisterHandlers(s)
+
+	log.Printf("Initialized...")
 }
 
 func main() {
