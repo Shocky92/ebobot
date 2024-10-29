@@ -22,11 +22,19 @@ var (
 	commands = []*discordgo.ApplicationCommand{
 		{
 			Name:        "ping",
-			Description: "Test bot",
+			Description: "Проверка бота",
 		},
 		{
 			Name:        "yagpt",
 			Description: "YandexGPT request",
+			Options: []*discordgo.ApplicationCommandOption{
+				{
+					Type:        discordgo.ApplicationCommandOptionString,
+					Name:        "prompt",
+					Description: "Запрос к нейросети",
+					Required:    true,
+				},
+			},
 		},
 	}
 
@@ -51,7 +59,7 @@ var (
 				Messages: []yandexgpt.YandexGPTMessage{
 					{
 						Role: yandexgpt.YandexGPTMessageRoleAssistant,
-						Text: "Напиши 5 животных и как они говорят",
+						Text: i.ApplicationCommandData().Options[0].StringValue(),
 					},
 				},
 			}
