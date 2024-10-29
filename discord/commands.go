@@ -50,6 +50,7 @@ func RegisterCommands(s *discordgo.Session) []*discordgo.ApplicationCommand {
 		if err != nil {
 			log.Panicf("Cannot create '%v' command: %v", v.Name, err)
 		}
+		log.Printf("Registered command: %v", v.Name)
 		registeredCommands[i] = cmd
 	}
 
@@ -64,5 +65,6 @@ func RemoveCommands(s *discordgo.Session, registeredCommands []*discordgo.Applic
 		if err != nil {
 			log.Panicf("Cannot delete '%v' command: %v", v.Name, err)
 		}
+		log.Printf("Removed command: %v", v.Name)
 	}
 }
