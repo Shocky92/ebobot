@@ -28,7 +28,10 @@ jobs:
         run: ls -R build/
 
       - name: Create-Evn-File
-        run: 'echo "DISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }}\nYANDEX_API_KEY=${{ secrets.YANDEX_API_KEY }}\nYANDEX_CATALOG_ID=${{ secrets.YANDEX_CATALOG_ID }}" > build/.env'
+        run: |
+          echo "DISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }}"" > build/.env
+          echo "YANDEX_API_KEY=${{ secrets.YANDEX_API_KEY }}" >> build/.env
+          echo "YANDEX_CATALOG_ID=${{ secrets.YANDEX_CATALOG_ID }}" >> build/.env
 
       - name: Display-Env-File
         run: cat build/.env
