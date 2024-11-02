@@ -10,6 +10,8 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/sheeiavellie/go-yandexgpt"
+	"google.golang.org/api/option"
+	"google.golang.org/api/youtube/v3"
 )
 
 // Bot parameters
@@ -32,6 +34,18 @@ var (
 					Type:        discordgo.ApplicationCommandOptionString,
 					Name:        "prompt",
 					Description: "Запрос к нейросети",
+					Required:    true,
+				},
+			},
+		},
+		{
+			Name:        "youtube",
+			Description: "Youtube video search",
+			Options: []*discordgo.ApplicationCommandOption{
+				{
+					Type:        discordgo.ApplicationCommandOptionString,
+					Name:        "prompt",
+					Description: "Поиск видео в Youtube",
 					Required:    true,
 				},
 			},
@@ -86,8 +100,62 @@ var (
 				})
 			})
 		},
+		"youtube": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+			service, err := youtube.NewService(context.Background(), option.WithAPIKey(config.YoutubeApiKey))
+
+			if err != nil {
+				log.Fatalf("Error creating new YouTube service: %v", err)
+			}
+
+			// Make the API call to YouTube.
+			call := service.Search.
+				List([]string{"id", "snippet"}).
+				Q(i.ApplicationCommandData().Options[0].StringValue()).
+				MaxResults(1)
+
+			response, err := call.Do()
+			if err != nil {
+				log.Fatalf("Error making API call: $v", err)
+			}
+
+			// Group video, channel, and playlist results in separate lists.
+			videos := make(map[string]string)
+			channels := make(map[string]string)
+			playlists := make(map[string]string)
+
+			// Iterate through each item and add it to the correct list.
+			for _, item := range response.Items {
+				switch item.Id.Kind {
+				case "youtube#video":
+					videos[item.Id.VideoId] = item.Snippet.Title
+				case "youtube#channel":
+					channels[item.Id.ChannelId] = item.Snippet.Title
+				case "youtube#playlist":
+					playlists[item.Id.PlaylistId] = item.Snippet.Title
+				}
+			}
+
+			printIDs("Videos", videos)
+			printIDs("Channels", channels)
+			printIDs("Playlists", playlists)
+
+			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: "pong",
+				},
+			})
+		},
 	}
 )
+
+func printIDs(sectionName string, matches map[string]string) {
+	fmt.Printf("%v:\n", sectionName)
+	for id, title := range matches {
+		fmt.Printf("[%v] %v\n", id, title)
+	}
+	fmt.Printf("\n\n")
+}
 
 func RegisterHandlers(s *discordgo.Session) {
 	s.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
