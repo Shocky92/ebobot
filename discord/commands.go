@@ -44,7 +44,7 @@ var (
 			Options: []*discordgo.ApplicationCommandOption{
 				{
 					Type:        discordgo.ApplicationCommandOptionString,
-					Name:        "prompt",
+					Name:        "search",
 					Description: "Поиск видео в Youtube",
 					Required:    true,
 				},
