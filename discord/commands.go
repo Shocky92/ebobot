@@ -10,6 +10,8 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/sheeiavellie/go-yandexgpt"
+	"google.golang.org/api/option"
+	"google.golang.org/api/youtube/v3"
 )
 
 // Bot parameters
@@ -32,6 +34,18 @@ var (
 					Type:        discordgo.ApplicationCommandOptionString,
 					Name:        "prompt",
 					Description: "Запрос к нейросети",
+					Required:    true,
+				},
+			},
+		},
+		{
+			Name:        "youtube",
+			Description: "Youtube video search",
+			Options: []*discordgo.ApplicationCommandOption{
+				{
+					Type:        discordgo.ApplicationCommandOptionString,
+					Name:        "search",
+					Description: "Поиск видео в Youtube",
 					Required:    true,
 				},
 			},
@@ -84,6 +98,31 @@ var (
 				_, err = s.InteractionResponseEdit(i.Interaction, &discordgo.WebhookEdit{
 					Content: &content,
 				})
+			})
+		},
+		"youtube": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+			service, err := youtube.NewService(context.Background(), option.WithAPIKey(config.YoutubeApiKey))
+
+			if err != nil {
+				log.Fatalf("Error creating new YouTube service: %v", err)
+			}
+
+			// Make the API call to YouTube.
+			call := service.Search.
+				List([]string{"id", "snippet"}).
+				Q(i.ApplicationCommandData().Options[0].StringValue()).
+				MaxResults(1)
+
+			response, err := call.Do()
+			if err != nil {
+				log.Fatalf("Error making API call: $v", err)
+			}
+
+			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: "https://www.youtube.com/watch?v=" + response.Items[0].Id.VideoId,
+				},
 			})
 		},
 	}

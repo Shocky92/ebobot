@@ -32,6 +32,7 @@ jobs:
           echo "DISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }}" > build/.env
           echo "YANDEX_API_KEY=${{ secrets.YANDEX_API_KEY }}" >> build/.env
           echo "YANDEX_CATALOG_ID=${{ secrets.YANDEX_CATALOG_ID }}" >> build/.env
+          echo "YOUTUBE_API_KEY=${{ secrets.YOUTUBE_API_KEY }}" >> build/.env
 
       - name: Display-Env-File
         run: cat build/.env

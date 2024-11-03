@@ -11,6 +11,7 @@ var (
 	Token           string
 	YandexAPIKey    string
 	YandexCatalogID string
+	YoutubeApiKey   string
 )
 
 func SetConfig() {
@@ -25,4 +26,6 @@ func SetConfig() {
 	// Yandex
 	YandexAPIKey = os.Getenv("YANDEX_API_KEY")
 	YandexCatalogID = os.Getenv("YANDEX_CATALOG_ID")
+	// Youtube
+	YoutubeApiKey = os.Getenv("YOUTUBE_API_KEY")
 }
