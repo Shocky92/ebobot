@@ -128,14 +128,6 @@ var (
 	}
 )
 
-func printIDs(sectionName string, matches map[string]string) {
-	fmt.Printf("%v:\n", sectionName)
-	for id, title := range matches {
-		fmt.Printf("[%v] %v\n", id, title)
-	}
-	fmt.Printf("\n\n")
-}
-
 func RegisterHandlers(s *discordgo.Session) {
 	s.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		if h, ok := commandHandlers[i.ApplicationCommandData().Name]; ok {
