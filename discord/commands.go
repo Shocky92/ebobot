@@ -118,31 +118,10 @@ var (
 				log.Fatalf("Error making API call: $v", err)
 			}
 
-			// Group video, channel, and playlist results in separate lists.
-			videos := make(map[string]string)
-			channels := make(map[string]string)
-			playlists := make(map[string]string)
-
-			// Iterate through each item and add it to the correct list.
-			for _, item := range response.Items {
-				switch item.Id.Kind {
-				case "youtube#video":
-					videos[item.Id.VideoId] = item.Snippet.Title
-				case "youtube#channel":
-					channels[item.Id.ChannelId] = item.Snippet.Title
-				case "youtube#playlist":
-					playlists[item.Id.PlaylistId] = item.Snippet.Title
-				}
-			}
-
-			printIDs("Videos", videos)
-			printIDs("Channels", channels)
-			printIDs("Playlists", playlists)
-
 			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 				Type: discordgo.InteractionResponseChannelMessageWithSource,
 				Data: &discordgo.InteractionResponseData{
-					Content: "pong",
+					Content: "https://www.youtube.com/watch?v=" + response.Items[0].Id.VideoId,
 				},
 			})
 		},
