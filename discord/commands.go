@@ -21,6 +21,17 @@ var (
 
 // Commands
 var (
+	componentHandlers = map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate){
+		"badumtss": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: "https://cdn.discordapp.com/attachments/209759858856165377/394033551294726154/7445930.jpg",
+				},
+			})
+		},
+	}
+
 	commands = []*discordgo.ApplicationCommand{
 		{
 			Name:        "ping",
@@ -49,6 +60,10 @@ var (
 					Required:    true,
 				},
 			},
+		},
+		{
+			Name:        "custom",
+			Description: "custom commands",
 		},
 	}
 
@@ -125,13 +140,42 @@ var (
 				},
 			})
 		},
+		"custom": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: "custom command",
+					Flags:   discordgo.MessageFlagsEphemeral,
+					Components: []discordgo.MessageComponent{
+						discordgo.ActionsRow{
+							Components: []discordgo.MessageComponent{
+								discordgo.Button{
+									Label:    "badumtss",
+									Style:    discordgo.LinkButton,
+									Disabled: false,
+									URL:      "https://cdn.discordapp.com/attachments/209759858856165377/394033551294726154/7445930.jpg ",
+									// CustomID: "badumtss",
+								},
+							},
+						},
+					},
+				},
+			})
+		},
 	}
 )
 
 func RegisterHandlers(s *discordgo.Session) {
 	s.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-		if h, ok := commandHandlers[i.ApplicationCommandData().Name]; ok {
-			h(s, i)
+		switch i.Type {
+		case discordgo.InteractionApplicationCommand:
+			if h, ok := commandHandlers[i.ApplicationCommandData().Name]; ok {
+				h(s, i)
+			}
+		case discordgo.InteractionMessageComponent:
+			if h, ok := componentHandlers[i.MessageComponentData().CustomID]; ok {
+				h(s, i)
+			}
 		}
 	})
 }
