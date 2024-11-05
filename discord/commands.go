@@ -67,7 +67,7 @@ var (
 				ModelURI: yandexgpt.MakeModelURI(config.YandexCatalogID, yandexgpt.YandexGPT4ModelLite),
 				CompletionOptions: yandexgpt.YandexGPTCompletionOptions{
 					Stream:      false,
-					Temperature: 0.7,
+					Temperature: 1.0,
 					MaxTokens:   2000,
 				},
 				Messages: []yandexgpt.YandexGPTMessage{
