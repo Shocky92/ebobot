@@ -30,6 +30,70 @@ var (
 				},
 			})
 		},
+		"feron": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: "http://image.prntscr.com/image/2bf970c168d14558a5a5c94f7fbb2c36.png",
+				},
+			})
+		},
+		"goblin": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: "https://youtu.be/TfV0QGthMmc",
+				},
+			})
+		},
+		"happyment": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: "https://pp.userapi.com/c830400/v830400244/18f4d1/UszOuoziVEc.jpg",
+				},
+			})
+		},
+		"kertcoin": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: "https://i.imgur.com/po5nbTF.jpg",
+				},
+			})
+		},
+		"omegalul": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: "https://youtu.be/5ejsttVNPLA",
+				},
+			})
+		},
+		"pidaras": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: "https://media.discordapp.net/attachments/209759858856165377/642729886728847370/unknown.png?ex=672b7ada&is=672a295a&hm=d25106434000f23f88a322820270f6215b87552695f17268a49848ae59ba1f3d&=&format=webp&quality=lossless",
+				},
+			})
+		},
+		"pizda": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: "https://youtu.be/a3SarF-TOMc",
+				},
+			})
+		},
+		"who": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: "https://media.discordapp.net/attachments/209759858856165377/444549331199066122/who.PNG",
+				},
+			})
+		},
 	}
 
 	commands = []*discordgo.ApplicationCommand{
@@ -153,8 +217,59 @@ var (
 									Label:    "badumtss",
 									Style:    discordgo.SuccessButton,
 									Disabled: false,
-									// 							URL:      "https://cdn.discordapp.com/attachments/209759858856165377/394033551294726154/7445930.jpg ",
 									CustomID: "badumtss",
+								},
+								discordgo.Button{
+									Label:    "feron",
+									Style:    discordgo.SuccessButton,
+									Disabled: false,
+									CustomID: "feron",
+								},
+								discordgo.Button{
+									Label:    "goblin",
+									Style:    discordgo.SuccessButton,
+									Disabled: false,
+									CustomID: "goblin",
+								},
+								discordgo.Button{
+									Label:    "happyment",
+									Style:    discordgo.SuccessButton,
+									Disabled: false,
+									CustomID: "happyment",
+								},
+								discordgo.Button{
+									Label:    "pizda",
+									Style:    discordgo.SuccessButton,
+									Disabled: false,
+									CustomID: "pizda",
+								},
+							},
+						},
+						discordgo.ActionsRow{
+							Components: []discordgo.MessageComponent{
+								discordgo.Button{
+									Label:    "kertcoin",
+									Style:    discordgo.SuccessButton,
+									Disabled: false,
+									CustomID: "kertcoin",
+								},
+								discordgo.Button{
+									Label:    "omegalul",
+									Style:    discordgo.SuccessButton,
+									Disabled: false,
+									CustomID: "omegalul",
+								},
+								discordgo.Button{
+									Label:    "pidaras",
+									Style:    discordgo.SuccessButton,
+									Disabled: false,
+									CustomID: "pidaras",
+								},
+								discordgo.Button{
+									Label:    "who",
+									Style:    discordgo.SuccessButton,
+									Disabled: false,
+									CustomID: "who",
 								},
 							},
 						},
