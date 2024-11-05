@@ -151,10 +151,10 @@ var (
 							Components: []discordgo.MessageComponent{
 								discordgo.Button{
 									Label:    "badumtss",
-									Style:    discordgo.LinkButton,
+									Style:    discordgo.SuccessButton,
 									Disabled: false,
-									URL:      "https://cdn.discordapp.com/attachments/209759858856165377/394033551294726154/7445930.jpg ",
-									// CustomID: "badumtss",
+									// 							URL:      "https://cdn.discordapp.com/attachments/209759858856165377/394033551294726154/7445930.jpg ",
+									CustomID: "badumtss",
 								},
 							},
 						},
