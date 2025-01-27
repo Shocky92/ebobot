@@ -8,6 +8,8 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
+	deepseek "github.com/cohesion-org/deepseek-go"
+	"github.com/cohesion-org/deepseek-go/constants"
 	"github.com/sheeiavellie/go-yandexgpt"
 	"google.golang.org/api/option"
 	"google.golang.org/api/youtube/v3"
@@ -85,6 +87,42 @@ func MakeCommandHandlers() map[string]func(*discordgo.Session, *discordgo.Intera
 				Data: &discordgo.InteractionResponseData{
 					Content: "https://www.youtube.com/watch?v=" + response.Items[0].Id.VideoId,
 				},
+			})
+		},
+		"deepseek": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+			client := deepseek.NewClient(config.DeepSeekApiKey)
+
+			request := &deepseek.ChatCompletionRequest{
+				Model: deepseek.DeepSeekChat,
+				Messages: []deepseek.ChatCompletionMessage{
+					{
+						Role:    constants.ChatMessageRoleAssistant,
+						Content: i.ApplicationCommandData().Options[0].StringValue(),
+					},
+				},
+			}
+
+			var content string
+			// Send the request and handle the response
+			ctx := context.Background()
+			response, err := client.CreateChatCompletion(ctx, request)
+			if err != nil {
+				log.Fatalf("error: %v", err)
+			}
+
+			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Flags:   discordgo.MessageFlagsLoading,
+					Content: "Обработка ответа, ожидайте...",
+				},
+			})
+
+			time.AfterFunc(time.Second, func() {
+				content = response.Choices[0].Message.Content
+				_, err = s.InteractionResponseEdit(i.Interaction, &discordgo.WebhookEdit{
+					Content: &content,
+				})
 			})
 		},
 		"custom": func(s *discordgo.Session, i *discordgo.InteractionCreate) {

@@ -12,6 +12,7 @@ var (
 	YandexAPIKey    string
 	YandexCatalogID string
 	YoutubeApiKey   string
+	DeepSeekApiKey  string
 )
 
 func SetConfig() {
@@ -28,4 +29,6 @@ func SetConfig() {
 	YandexCatalogID = os.Getenv("YANDEX_CATALOG_ID")
 	// Youtube
 	YoutubeApiKey = os.Getenv("YOUTUBE_API_KEY")
+	// DeepSeek
+	DeepSeekApiKey = os.Getenv("DEEPSEEK_API_KEY")
 }

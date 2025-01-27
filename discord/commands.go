@@ -33,6 +33,18 @@ func MakeCommandList() []*discordgo.ApplicationCommand {
 			},
 		},
 		{
+			Name:        "deepseek",
+			Description: "DeepSeek GPT Request",
+			Options: []*discordgo.ApplicationCommandOption{
+				{
+					Type:        discordgo.ApplicationCommandOptionString,
+					Name:        "prompt",
+					Description: "Запрос к нейросети",
+					Required:    true,
+				},
+			},
+		},
+		{
 			Name:        "custom",
 			Description: "custom commands",
 		},

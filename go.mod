@@ -1,6 +1,8 @@
 module ebobot
 
-go 1.22.4
+go 1.23.3
+
+toolchain go1.23.5
 
 require (
 	github.com/bwmarrin/discordgo v0.28.1
@@ -11,6 +13,7 @@ require (
 	cloud.google.com/go/auth v0.10.0 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.5 // indirect
 	cloud.google.com/go/compute/metadata v0.5.2 // indirect
+	github.com/cohesion-org/deepseek-go v0.0.0-20250126155110-fdfb05803d7a // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
