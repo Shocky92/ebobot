@@ -5,10 +5,8 @@ import (
 	"ebobot/config"
 	"fmt"
 	"log"
-	"time"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/sheeiavellie/go-yandexgpt"
 )
 
 var firstRowButtons = buttons[:5]
@@ -25,28 +23,21 @@ func MakeCommandHandlers() map[string]func(*discordgo.Session, *discordgo.Intera
 			})
 		},
 		"yagpt": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-			client := yandexgpt.NewYandexGPTClientWithAPIKey(config.YandexAPIKey)
-			request := yandexgpt.YandexGPTRequest{
-				ModelURI: yandexgpt.MakeModelURI(config.YandexCatalogID, yandexgpt.YandexGPT4ModelLite),
-				CompletionOptions: yandexgpt.YandexGPTCompletionOptions{
-					Stream:      false,
-					Temperature: 1.0,
-					MaxTokens:   2000,
-				},
-				Messages: []yandexgpt.YandexGPTMessage{
-					{
-						Role: yandexgpt.YandexGPTMessageRoleAssistant,
-						Text: i.ApplicationCommandData().Options[0].StringValue(),
+			ctx := context.Background()
+			client, err := newYandexGPTClient(config.YandexAPIKey, config.YandexCatalogID)
+			if err != nil {
+				log.Println("Error creating Yandex GPT client:", err)
+				s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+					Type: discordgo.InteractionResponseChannelMessageWithSource,
+					Data: &discordgo.InteractionResponseData{
+						Content: "Ошибка при создании клиента Yandex GPT.",
 					},
-				},
+				})
+				return
 			}
 
-			var content string
-			response, err := client.CreateRequest(context.Background(), request)
-			if err != nil {
-				content = fmt.Sprintf("Request error: %v", err)
-				log.Fatalf("Request error: %v", err)
-			}
+			query := i.ApplicationCommandData().Options[0].StringValue()
+			request := newYandexGPTRequest(config.YandexCatalogID, query)
 
 			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 				Type: discordgo.InteractionResponseChannelMessageWithSource,
@@ -56,11 +47,19 @@ func MakeCommandHandlers() map[string]func(*discordgo.Session, *discordgo.Intera
 				},
 			})
 
-			time.AfterFunc(time.Second, func() {
-				content = response.Result.Alternatives[0].Message.Text
-				_, err = s.InteractionResponseEdit(i.Interaction, &discordgo.WebhookEdit{
-					Content: &content,
+			response, err := client.CreateRequest(ctx, request)
+			if err != nil {
+				log.Println("Request error:", err)
+				message := fmt.Sprintf("Request error: %v", err)
+				s.InteractionResponseEdit(i.Interaction, &discordgo.WebhookEdit{
+					Content: &message,
 				})
+				return
+			}
+
+			content := response.Result.Alternatives[0].Message.Text
+			s.InteractionResponseEdit(i.Interaction, &discordgo.WebhookEdit{
+				Content: &content,
 			})
 		},
 		"youtube": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
