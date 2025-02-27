@@ -9,9 +9,10 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/sheeiavellie/go-yandexgpt"
-	"google.golang.org/api/option"
-	"google.golang.org/api/youtube/v3"
 )
+
+var firstRowButtons = buttons[:5]
+var secondRowButtons = buttons[5:]
 
 func MakeCommandHandlers() map[string]func(*discordgo.Session, *discordgo.InteractionCreate) {
 	return map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate){
@@ -63,27 +64,33 @@ func MakeCommandHandlers() map[string]func(*discordgo.Session, *discordgo.Intera
 			})
 		},
 		"youtube": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-			service, err := youtube.NewService(context.Background(), option.WithAPIKey(config.YoutubeApiKey))
-
+			ctx := context.Background()
+			service, err := newYoutubeService(ctx, config.YoutubeApiKey)
 			if err != nil {
 				log.Fatalf("Error creating new YouTube service: %v", err)
 			}
 
-			// Make the API call to YouTube.
-			call := service.Search.
-				List([]string{"id", "snippet"}).
-				Q(i.ApplicationCommandData().Options[0].StringValue()).
-				MaxResults(1)
-
-			response, err := call.Do()
+			query := i.ApplicationCommandData().Options[0].StringValue()
+			response, err := searchVideo(service, query)
 			if err != nil {
-				log.Fatalf("Error making API call: $v", err)
+				log.Fatalf("Error making API call: %v", err)
 			}
 
+			if len(response.Items) == 0 {
+				s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+					Type: discordgo.InteractionResponseChannelMessageWithSource,
+					Data: &discordgo.InteractionResponseData{
+						Content: "Видео не найдено.",
+					},
+				})
+				return
+			}
+
+			url := createURL(response.Items[0])
 			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 				Type: discordgo.InteractionResponseChannelMessageWithSource,
 				Data: &discordgo.InteractionResponseData{
-					Content: "https://www.youtube.com/watch?v=" + response.Items[0].Id.VideoId,
+					Content: url,
 				},
 			})
 		},
@@ -94,68 +101,8 @@ func MakeCommandHandlers() map[string]func(*discordgo.Session, *discordgo.Intera
 					Content: "custom command",
 					Flags:   discordgo.MessageFlagsEphemeral,
 					Components: []discordgo.MessageComponent{
-						discordgo.ActionsRow{
-							Components: []discordgo.MessageComponent{
-								discordgo.Button{
-									Label:    "badumtss",
-									Style:    discordgo.SuccessButton,
-									Disabled: false,
-									CustomID: "badumtss",
-								},
-								discordgo.Button{
-									Label:    "feron",
-									Style:    discordgo.SuccessButton,
-									Disabled: false,
-									CustomID: "feron",
-								},
-								discordgo.Button{
-									Label:    "goblin",
-									Style:    discordgo.SuccessButton,
-									Disabled: false,
-									CustomID: "goblin",
-								},
-								discordgo.Button{
-									Label:    "happyment",
-									Style:    discordgo.SuccessButton,
-									Disabled: false,
-									CustomID: "happyment",
-								},
-								discordgo.Button{
-									Label:    "pizda",
-									Style:    discordgo.SuccessButton,
-									Disabled: false,
-									CustomID: "pizda",
-								},
-							},
-						},
-						discordgo.ActionsRow{
-							Components: []discordgo.MessageComponent{
-								discordgo.Button{
-									Label:    "kertcoin",
-									Style:    discordgo.SuccessButton,
-									Disabled: false,
-									CustomID: "kertcoin",
-								},
-								discordgo.Button{
-									Label:    "omegalul",
-									Style:    discordgo.SuccessButton,
-									Disabled: false,
-									CustomID: "omegalul",
-								},
-								discordgo.Button{
-									Label:    "pidaras",
-									Style:    discordgo.SuccessButton,
-									Disabled: false,
-									CustomID: "pidaras",
-								},
-								discordgo.Button{
-									Label:    "who",
-									Style:    discordgo.SuccessButton,
-									Disabled: false,
-									CustomID: "who",
-								},
-							},
-						},
+						createButtonRow(firstRowButtons),
+						createButtonRow(secondRowButtons),
 					},
 				},
 			})
