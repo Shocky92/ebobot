@@ -24,7 +24,7 @@ func MakeCommandHandlers() map[string]func(*discordgo.Session, *discordgo.Intera
 		},
 		"yagpt": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			ctx := context.Background()
-			client, err := newYandexGPTClient(config.YandexAPIKey, config.YandexCatalogID)
+			client, err := newYandexGPTClient(config.YandexAPIKey)
 			if err != nil {
 				log.Println("Error creating Yandex GPT client:", err)
 				s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{

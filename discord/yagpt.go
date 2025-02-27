@@ -2,7 +2,7 @@ package discord
 
 import "github.com/sheeiavellie/go-yandexgpt"
 
-func newYandexGPTClient(apiKey string, catalogID string) (*yandexgpt.YandexGPTClient, error) {
+func newYandexGPTClient(apiKey string) (*yandexgpt.YandexGPTClient, error) {
 	client := yandexgpt.NewYandexGPTClientWithAPIKey(apiKey)
 	return client, nil
 }
